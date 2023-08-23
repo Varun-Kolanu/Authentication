@@ -1,24 +1,18 @@
-import mongoose from "mongoose";
+import { pool } from "../data/database.js";
 
-const userSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        unique: true,
-        required: true
-    },
-    password: {
-        type: String,
-        select: false,
-        required: true
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
+export const createUserTable = async () => {
+    try {
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS users (
+                user_id SERIAL PRIMARY KEY,
+                user_name VARCHAR(20) NOT NULL,
+                user_email VARCHAR(100) UNIQUE NOT NULL,
+                user_password VARCHAR(73) NOT NULL,
+                user_bio VARCHAR(1000),
+                user_mobile VARCHAR(15)
+            );
+        `)
+    } catch (error) {
+        console.log(error);
     }
-})
-
-export const User = mongoose.model("User", userSchema);
+}
